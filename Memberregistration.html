@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <link rel="stylesheet" type="text/css" href="music_app_mr.css">
+    <script src="https://sdk.form.run/js/v2/formrun.js"></script>
+    <script type="text/javascript" src="music_app_mr.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>music app</title>
+</head>
+<body>
+    <h1>
+        <a href="music_app_main.html">music app</a>
+    </h1>
+    <ul class="tab">
+        <li><a href="music_app_main.html">作曲</a></li>
+        <li><a href="music_app_quis.html">クイズ</a></li>
+        <li><a>会員登録</a></li>
+        <li><a href="Membermypage.html">マイページ</a></li>
+    </ul>
+
+    <!-- class, action, methodを変更しないでください -->
+<form class="formrun" action="https://form.run/api/v1/r/t2m9r2l8ymwfwr202va3ml5o" method="post">
+    <!-- ↓自由に要素を追加・編集することができます -->
+    <div>
+      <label>お名前</label>
+      <input name="お名前" type="text">
+    </div>
+  ​
+    <div>
+      <label>メールアドレス [必須]</label>
+      <input name="メールアドレス" type="text" data-formrun-type="email" data-formrun-required>
+      <div data-formrun-show-if-error="メールアドレス">メールアドレスを正しく入力してください</div>
+    </div>
+  ​
+    <div>
+      <label>お問い合わせ [必須]</label>
+      <textarea name="お問い合わせ" data-formrun-required></textarea>
+      <div data-formrun-show-if-error="お問い合わせ">お問い合わせ入力してください</div>
+    </div>
+  ​
+    <div>
+      <label>個人情報利用同意 [必須]</label>
+      <input type="checkbox" name="個人情報利用同意" data-formrun-required>
+      <div data-formrun-show-if-error="個人情報利用同意">同意してください</div>
+    </div>
+  ​
+    <!-- ボット投稿をブロックするためのタグ -->
+    <div class="_formrun_gotcha">
+      <style media="screen">._formrun_gotcha {position:absolute!important;height:1px;width:1px;overflow:hidden;}</style>
+      <label for="_formrun_gotcha">If you are a human, ignore this field</label>
+      <input type="text" name="_formrun_gotcha" id="_formrun_gotcha" tabindex="-1">
+    </div>
+  ​
+    <button type="submit" data-formrun-error-text="未入力の項目があります" data-formrun-submitting-text="送信中...">送信</button>
+  </form>
+    
+</body>
+</html>
