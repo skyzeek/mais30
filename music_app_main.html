@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="music_app_maindesgn.css">
     <script type="text/javascript" src="music_app_main.js"></script>
     <meta charset="UTF-8">
@@ -17,139 +18,81 @@
         <li><a href="Memberregistration.html">会員登録</a></li>
         <li><a href="Membermypage.html">マイページ</a></li>
     </ul>
-  <a id="download">Download</a>
-  <button id="stop">Stop</button>
-  <script>
-    // for html
-    const downloadLink = document.getElementById('download');
-    const stopButton = document.getElementById('stop');
+  <div id="app">
+        <button class="btn btn-danger" type="button" v-if="status=='ready'" @click="startRecording">録音を開始する</button>
+        <button class="btn btn-primary" type="button" v-if="status=='recording'" @click="stopRecording">録音を終了する</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script>
 
-    // for audio
-    let audio_sample_rate = null;
-    let scriptProcessor = null;
-    let audioContext = null;
+        new Vue({
+            el: '#app',
+            data: {
+                // ① 変数を宣言する部分
+                status: 'init',     // 状況
+                recorder: null,     // 音声にアクセスする "MediaRecorder" のインスタンス
+                audioData: [],      // 入力された音声データ
+                audioExtension: ''  // 音声ファイルの拡張子
+            },
+            methods: {
+                startRecording() {
 
-    // audio data
-    let audioData = [];
-    let bufferSize = 1024;
+                    this.status = 'recording';
+                    this.audioData = [];
+                    this.recorder.start();
 
-    let saveAudio = function () {
-      downloadLink.href = exportWAV(audioData);
-      downloadLink.download = 'test.wav';
-      downloadLink.click();
+                },
+                stopRecording() {
 
-      audioContext.close().then(function () {
-        stopButton.setAttribute('disabled', 'disabled');
-      });
-    }
+                    this.recorder.stop();
+                    this.status = 'ready';
 
-    // export WAV from audio float data
-    let exportWAV = function (audioData) {
+                },
+                getExtension(audioType) {
 
-      let encodeWAV = function (samples, sampleRate) {
-        let buffer = new ArrayBuffer(44 + samples.length * 2);
-        let view = new DataView(buffer);
+                    let extension = 'wav';
+                    const matches = audioType.match(/audio\/([^;]+)/);
 
-        let writeString = function (view, offset, string) {
-          for (let i = 0; i < string.length; i++) {
-            view.setUint8(offset + i, string.charCodeAt(i));
-          }
-        };
+                    if(matches) {
 
-        let floatTo16BitPCM = function (output, offset, input) {
-          for (let i = 0; i < input.length; i++ , offset += 2) {
-            let s = Math.max(-1, Math.min(1, input[i]));
-            output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-          }
-        };
+                        extension = matches[1];
 
-        writeString(view, 0, 'RIFF');  // RIFFヘッダ
-        view.setUint32(4, 32 + samples.length * 2, true); // これ以降のファイルサイズ
-        writeString(view, 8, 'WAVE'); // WAVEヘッダ
-        writeString(view, 12, 'fmt '); // fmtチャンク
-        view.setUint32(16, 16, true); // fmtチャンクのバイト数
-        view.setUint16(20, 1, true); // フォーマットID
-        view.setUint16(22, 1, true); // チャンネル数
-        view.setUint32(24, sampleRate, true); // サンプリングレート
-        view.setUint32(28, sampleRate * 2, true); // データ速度
-        view.setUint16(32, 2, true); // ブロックサイズ
-        view.setUint16(34, 16, true); // サンプルあたりのビット数
-        writeString(view, 36, 'data'); // dataチャンク
-        view.setUint32(40, samples.length * 2, true); // 波形データのバイト数
-        floatTo16BitPCM(view, 44, samples); // 波形データ
+                    }
 
-        return view;
-      };
+                    return '.'+ extension;
 
-      let mergeBuffers = function (audioData) {
-        let sampleLength = 0;
-        for (let i = 0; i < audioData.length; i++) {
-          sampleLength += audioData[i].length;
-        }
-        let samples = new Float32Array(sampleLength);
-        let sampleIdx = 0;
-        for (let i = 0; i < audioData.length; i++) {
-          for (let j = 0; j < audioData[i].length; j++) {
-            samples[sampleIdx] = audioData[i][j];
-            sampleIdx++;
-          }
-        }
-        return samples;
-      };
+                }
+            },
+            mounted() {
 
-      let dataview = encodeWAV(mergeBuffers(audioData), audio_sample_rate);
-      let audioBlob = new Blob([dataview], { type: 'audio/wav' });
-      console.log(dataview);
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
 
-      let myURL = window.URL || window.webkitURL;
-      let url = myURL.createObjectURL(audioBlob);
-      return url;
-    };
+                        this.recorder = new MediaRecorder(stream);
+                        this.recorder.addEventListener('dataavailable', e => {
 
-    // stop button
-    stopButton.addEventListener('click', function () {
-      saveAudio();
-      console.log('saved wav');
-    });
+                            this.audioData.push(e.data);
+                            this.audioExtension = this.getExtension(e.data.type);
 
-    // save audio data
-    var onAudioProcess = function (e) {
-      var input = e.inputBuffer.getChannelData(0);
-      var bufferData = new Float32Array(bufferSize);
-      for (var i = 0; i < bufferSize; i++) {
-        bufferData[i] = input[i];
-      }
+                        });
+                        this.recorder.addEventListener('stop', () => {
 
-      audioData.push(bufferData);
-    };
+                            const audioBlob = new Blob(this.audioData);
+                            const url = URL.createObjectURL(audioBlob);
+                            let a = document.createElement('a');
+                            a.href = url;
+                            a.download = Math.floor(Date.now() / 1000) + this.audioExtension;
+                            document.body.appendChild(a);
+                            a.click();
 
-    // getusermedia
-    let handleSuccess = function (stream) {
-      audioContext = new AudioContext();
-      audio_sample_rate = audioContext.sampleRate;
-      console.log(audio_sample_rate);
-      scriptProcessor = audioContext.createScriptProcessor(bufferSize, 1, 1);
-      var mediastreamsource = audioContext.createMediaStreamSource(stream);
-      mediastreamsource.connect(scriptProcessor);
-      scriptProcessor.onaudioprocess = onAudioProcess;
-      scriptProcessor.connect(audioContext.destination);
+                        });
+                        this.status = 'ready';
 
-      console.log('record start?');
+                    });
 
-      // when time passed without pushing the stop button
-      setTimeout(function () {
-        console.log("10 sec");
-        if (stopButton.disabled == false) {
-          saveAudio();
-          console.log("saved audio");
-        }
-      }, 10000);
-    };
+            }
+        });
 
-    // getUserMedia
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-      .then(handleSuccess);
-
-  </script>
+    </script>
 </body>
 </html>
