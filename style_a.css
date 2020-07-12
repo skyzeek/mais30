@@ -61,3 +61,26 @@ ul, li {
 .menu:hover {
   width: 200px;
 }
+.ul_flush {
+  list-style: none;
+  padding-left: 0;
+  display: table;
+}
+.ul_flush li:after {
+  content: "";
+  display: block;
+  margin-bottom: 0.5em;
+}
+ 
+.ul_flush li {
+  display: table-row;
+}
+.ul_flush li:before {
+  content: "•";
+  display: table-cell;
+  padding-right: 0.4em;
+}
+ 
+li {
+  margin-bottom: 0.5em;
+}
