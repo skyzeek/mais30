@@ -12,6 +12,7 @@ ul, li {
 
 .container {
   height: 100%;
+  
 }
 
 .menu {
@@ -24,6 +25,7 @@ ul, li {
   overflow: hidden;
   transition: width 0.1s ease-in;
   transition-delay: 0.3s;
+  margin-right: auto;
 }
 
 .contents {
