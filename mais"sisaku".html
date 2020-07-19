@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style_a.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mais30</title>
+  <link rel="apple-touch-icon" sizes="60x60" href="favicon1.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon3.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery.cookie.js"></script>
+  <script type="text/javascript" src="js/mais.js"></script>
+  <script src="https://kit.fontawesome.com/944988706a.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="container">
+    <ul class="menu">
+      <li class="brand">
+      </li>
+      <li class="menu-item">
+        <i class="fa fa-microphone" aria-hideen="true"></i>録音
+      </li>
+      <li class="menu-item">
+        <i class="fa fa-comments" aria-hidden="true"></i>クイズ
+      </li>
+      <li class="menu-item">
+        <i class="fa fa-chalkboard-teacher" aria-hidden="true"></i>説明
+      </li>
+      <li class="menu-item">
+        <i class="fa fa-user" aria-hidden="true"></i>アカウント管理
+      </li>
+      <li class="menu-item">
+        <i class="fa fa-question-circle" aria-hidden="true"></i>概要
+      </li>
+    </ul>
+    <div class="contents">
+      <div id="app">
+        <button class="btn btn-danger" type="button" v-if="status=='ready'" @click="startRecording">録音を開始する</button>
+        <button class="btn btn-primary" type="button" v-if="status=='recording'" @click="stopRecording">録音を終了する</button>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+      <script>
+
+        new Vue({
+          el: '#app',
+          data: {
+            // ① 変数を宣言する部分
+            status: 'init',     // 状況
+            recorder: null,     // 音声にアクセスする "MediaRecorder" のインスタンス
+            audioData: [],      // 入力された音声データ
+            audioExtension: ''  // 音声ファイルの拡張子
+          },
+          methods: {
+            startRecording() {
+
+              this.status = 'recording';
+              this.audioData = [];
+              this.recorder.start();
+
+            },
+            stopRecording() {
+
+              this.recorder.stop();
+              this.status = 'ready';
+
+            },
+            getExtension(audioType) {
+
+              let extension = 'wav';
+              const matches = audioType.match(/audio\/([^;]+)/);
+
+              if (matches) {
+
+                extension = matches[1];
+
+              }
+
+              return '.' + extension;
+
+            }
+          },
+          mounted() {
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+              .then(stream => {
+
+                this.recorder = new MediaRecorder(stream);
+                this.recorder.addEventListener('dataavailable', e => {
+
+                  this.audioData.push(e.data);
+                  this.audioExtension = this.getExtension(e.data.type);
+
+                });
+                this.recorder.addEventListener('stop', () => {
+
+                  const audioBlob = new Blob(this.audioData);
+                  const url = URL.createObjectURL(audioBlob);
+                  let a = document.createElement('a');
+                  a.href = url;
+                  a.download = Math.floor(Date.now() / 1000) + this.audioExtension;
+                  document.body.appendChild(a);
+                  a.click();
+
+                });
+                this.status = 'ready';
+
+              });
+
+          }
+        });
+
+      </script>
+    </div>
+  </div>
+</body>
+
+</html>
