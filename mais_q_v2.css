@@ -1,3 +1,4 @@
+/*サイドメニュー*/
 html, body {
   padding: 0;
   margin: 0;
@@ -68,20 +69,12 @@ body{
     margin: 0px;
 }
 
-
-
-
-
-
-
-
-
-
 .ul_flush {
   list-style: none;
   padding-left: 0;
   display: table;
 }
+
 .ul_flush li:after {
   content: "";
   display: block;
@@ -99,4 +92,65 @@ body{
  
 li {
   margin-bottom: 0.5em;
+}
+/*アコーディオン,クイズ*/
+
+
+.accordion {
+  max-width: 400px;
+  font-family: Lato;
+  margin-bottom: 20px;
+
+  background-color: #ec5366;
+  border-radius: 6px;
+}
+
+.accordion .header {
+  height: 40px;
+  line-height: 40px;
+  padding: 0 40px 0 8px;
+  position: relative;
+  color: #fff;
+  cursor: pointer;
+}
+
+.accordion .header-icon {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  transform: rotate(0deg);
+  transition-duration: 0.3s;
+}
+
+.accordion .body {
+  display: none;
+  background-color: #fff;
+  border: 10px solid #ec5366;
+  padding: 8px;
+  border-top: 0;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.accordion.show .header-icon {
+  transform: rotate(180deg);
+  transition-duration: 0.3s;
+}
+
+.accordion.ms {
+  background-color: #8c618d;
+}
+
+.accordion.ms .body {
+  border-color: #8c618d;
+}
+.accordion.hs {
+  background-color: #461424;
+}
+
+.accordion.hs .body {
+  border-color: #461424;
 }
