@@ -104,7 +104,8 @@ li {
   background-color: #ec5366;
   border-radius: 6px;
   
-  margin-left: 100px;
+  margin-left: 200px;
+  margin-top: 100px;
 }
 
 .accordion .header {
