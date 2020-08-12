@@ -22,7 +22,7 @@ ul, li {
   color: #fff;
   position: absolute;
   height: 100%;
-  width: 45px;
+  width: 100px;
   white-space: nowrap;
   overflow: hidden;
   transition: width 0.1s ease-in;
