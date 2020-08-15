@@ -3,6 +3,9 @@ html, body {
   margin: 0;
   height: 100%;
 }
+a {
+  color: #fff;
+}
 
 ul, li {
   margin: 0;
