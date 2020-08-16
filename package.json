@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/skyzeek/mais30#readme",
   "dependencies": {
-    "firebase": "^7.18.0"
+    "firebase": "^7.18.0",
+    "firebaseui": "^4.6.1",
+    "gcip-iap": "^0.1.2"
   }
 }
