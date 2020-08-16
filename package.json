@@ -1,0 +1,23 @@
+{
+  "name": "mais30",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mais.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skyzeek/mais30.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skyzeek/mais30/issues"
+  },
+  "homepage": "https://github.com/skyzeek/mais30#readme",
+  "dependencies": {
+    "firebase": "^7.18.0"
+  }
+}
