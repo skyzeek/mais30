@@ -6,6 +6,8 @@ import * as firebaseui from 'firebaseui'
 // Import gcip-iap module.
 import * as ciap from 'gcip-iap';
 
+
+
 // The project configuration.
 const configs = {
     // Configuration for project identified by API key API_KEY1.
